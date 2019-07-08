@@ -29,12 +29,15 @@ require 'fake_sns/deliver_message'
 require 'fake_sns/response'
 require 'fake_sns/action'
 require 'fake_sns/server'
+require 'fake_sns/update_hosts'
 
 # load all the actions
 action_files = File.expand_path('fake_sns/actions/*.rb', __dir__)
 Dir.glob(action_files).each do |file|
   require file
 end
+
+
 
 # FakeSNS server
 module FakeSNS
@@ -43,6 +46,9 @@ module FakeSNS
     enable_logging(app, options[:log]) unless options[:log].nil?
     enable_verbose(app) if options[:verbose]
     set_options(app, options)
+    if options[:update_hosts]
+        update_hosts()
+    end
     app
   end
 
