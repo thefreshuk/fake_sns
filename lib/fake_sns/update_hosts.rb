@@ -11,8 +11,8 @@ def update_hosts
     hosts = Hosts::File.read('/etc/hosts')
 
     if_none = lambda do
-      entry = Hosts::Entry.new(ip, 'fakesns',
-                               :aliases => ['sns.aws.local'],
+      entry = Hosts::Entry.new(ip, 'sns.aws.local',
+                               :aliases => ['fakesns'],
                                :comment => 'Fake SNS local')
       hosts.elements << entry
       entry
@@ -20,7 +20,7 @@ def update_hosts
 
     element = hosts.elements.find(if_none) do |element|
       next unless element.respond_to?(:name)
-      element.name == "fakesns"
+      element.name == "sns.aws.local"
     end
 
     element.address = ip
@@ -28,4 +28,3 @@ def update_hosts
     sudo[hosts].write
   end
 end
-    
