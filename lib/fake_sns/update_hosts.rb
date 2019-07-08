@@ -28,3 +28,4 @@ def update_hosts
     sudo[hosts].write
   end
 end
+    
