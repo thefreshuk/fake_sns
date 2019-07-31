@@ -14,6 +14,7 @@ options = {
   database: nil,
   auto_drain: false,
   purge_on_drain: false,
+  log: nil,
   update_hosts: false,
 }
 
@@ -42,7 +43,7 @@ parser = OptionParser.new do |o|
     options[:daemonize] = daemonize
   end
 
-  o.on '-v', '--[no]-verbose', 'Shows input parameters and output XML' do |verbose|
+  o.on '-v', '--[no-]verbose', 'Shows input parameters and output XML' do |verbose|
     options[:verbose] = verbose
   end
 
@@ -53,6 +54,9 @@ parser = OptionParser.new do |o|
   o.on '-x', '--purge-on-drain', 'Purges messages on drain' do |purge_on_drain|
     options[:purge_on_drain] = purge_on_drain
   end
+
+  o.on '-L', '--log FILENAME', 'Logs to a file (STDOUT by default)' do |log|
+    options[:log] = log
 
   o.on '-i', '--update-hosts', 'Updates hosts file to add sns.aws.local to local ip' do |update_hosts|
     options[:update_hosts] = update_hosts
