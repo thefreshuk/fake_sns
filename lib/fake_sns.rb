@@ -1,6 +1,8 @@
 Encoding.default_external = Encoding::UTF_8
 Encoding.default_internal = Encoding::UTF_8
 
+ROOT_DIR = File.join(__dir__, '..')
+
 require 'virtus'
 require 'verbose_hash_fetch'
 
@@ -39,9 +41,8 @@ end
 
 # FakeSNS server
 module FakeSNS
-  def self.server(options, root_dir = Dir.pwd)
+  def self.server(options)
     app = Server
-    app.set :root_dir, root_dir
     enable_logging(app, options[:log]) unless options[:log].nil?
     enable_verbose(app) if options[:verbose]
     set_options(app, options)
