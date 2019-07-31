@@ -57,7 +57,8 @@ parser = OptionParser.new do |o|
 
   o.on '-L', '--log FILENAME', 'Logs to a file (STDOUT by default)' do |log|
     options[:log] = log
-
+  end
+  
   o.on '-i', '--update-hosts', 'Updates hosts file to add sns.aws.local to local ip' do |update_hosts|
     options[:update_hosts] = update_hosts
   end
