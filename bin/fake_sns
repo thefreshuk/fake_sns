@@ -96,4 +96,4 @@ if (pid = options[:pid])
   File.open(pid, 'w') { |f| f.write(Process.pid) }
 end
 
-FakeSNS.server(options, File.join(__dir__, '..')).run!
+FakeSNS.server(options).run!
