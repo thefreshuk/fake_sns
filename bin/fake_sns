@@ -14,7 +14,8 @@ options = {
   database: nil,
   auto_drain: false,
   purge_on_drain: false,
-  log: nil
+  log: nil,
+  update_hosts: false,
 }
 
 parser = OptionParser.new do |o|
@@ -56,6 +57,9 @@ parser = OptionParser.new do |o|
 
   o.on '-L', '--log FILENAME', 'Logs to a file (STDOUT by default)' do |log|
     options[:log] = log
+
+  o.on '-i', '--update-hosts', 'Updates hosts file to add sns.aws.local to local ip' do |update_hosts|
+    options[:update_hosts] = update_hosts
   end
 
   o.on_tail '--version', 'Shows the version' do

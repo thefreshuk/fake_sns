@@ -22,6 +22,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'sinatra', '~> 1.4'
   spec.add_dependency 'verbose_hash_fetch'
   spec.add_dependency 'virtus', '~> 1.0'
+  spec.add_dependency 'hosts', '~> 0.1.1'
+  spec.add_dependency 'sudo', '~> 0.2.0'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'fake_sqs', '~> 0.2'
