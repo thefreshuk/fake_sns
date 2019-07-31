@@ -12,8 +12,10 @@ def update_hosts
 
     if_none = lambda do
       entry = Hosts::Entry.new(ip, 'sns.aws.local',
-                               :aliases => ['fakesns'],
-                               :comment => 'Fake SNS local')
+                               aliases: ['fakesns'],
+                               comment:'Fake SNS local'
+      )
+
       hosts.elements << entry
       entry
     end

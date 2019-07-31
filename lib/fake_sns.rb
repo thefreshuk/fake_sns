@@ -37,18 +37,15 @@ Dir.glob(action_files).each do |file|
   require file
 end
 
-
-
 # FakeSNS server
 module FakeSNS
-  def self.server(options)
+  def self.server(options, root_dir = Dir.pwd)
     app = Server
+    app.set :root_dir, root_dir
     enable_logging(app, options[:log]) unless options[:log].nil?
     enable_verbose(app) if options[:verbose]
     set_options(app, options)
-    if options[:update_hosts]
-        update_hosts()
-    end
+    update_hosts if options[:update_hosts]
     app
   end
 
