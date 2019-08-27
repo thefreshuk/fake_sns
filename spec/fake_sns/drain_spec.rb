@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'json_expressions/rspec'
+require 'json'
 
 RSpec.describe 'Drain messages', :sqs do
   it 'works for SQS' do
@@ -71,7 +72,7 @@ RSpec.describe 'Drain messages', :sqs do
     expect(requests.size).to eq 1
     expect(requests.first).to match_json_expression(
       'Type'             => 'Notification',
-      'Message'          => 'hallo',
+      'Message'          => { default: 'hallo' }.to_json,
       'MessageId'        => message_id,
       'Signature'        => anything,
       'SignatureVersion' => '1',

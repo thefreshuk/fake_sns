@@ -17,4 +17,6 @@ test/version_tmp
 tmp
 log/
 /labs
-*.log
+*.log.idea
+.idea
+out.log

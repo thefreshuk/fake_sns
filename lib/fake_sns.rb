@@ -1,11 +1,11 @@
 Encoding.default_external = Encoding::UTF_8
 Encoding.default_internal = Encoding::UTF_8
 
-ROOT_DIR = File.join(__dir__, '..')
-
+require 'logger'
 require 'virtus'
 require 'verbose_hash_fetch'
 
+require 'fake_sns/constants'
 require 'fake_sns/error'
 require 'fake_sns/error_response'
 
@@ -32,6 +32,8 @@ require 'fake_sns/response'
 require 'fake_sns/action'
 require 'fake_sns/server'
 require 'fake_sns/update_hosts'
+
+$log = Logger.new(STDOUT)
 
 # load all the actions
 action_files = File.expand_path('fake_sns/actions/*.rb', __dir__)
