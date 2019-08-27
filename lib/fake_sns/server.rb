@@ -68,13 +68,12 @@ module FakeSNS
       begin
         database.transaction do
           database.each_deliverable_message do |subscription, message|
-            puts [subscription, message]
             DeliverMessage.call(
-              subscription: subscription,
-              message: message,
-              request: request,
-              config: config,
-              signing_url: signing_url
+                subscription: subscription,
+                message: message,
+                request: request,
+                config: config,
+                signing_url: signing_url
             )
             purge(message.id)
           end

@@ -9,6 +9,7 @@ require 'pry'
 
 module FakeSNS
   ROOT_DIR = File.join(__dir__, '..')
+  ASYNC = false
 end
 
 require 'fake_sns/test_integration'
