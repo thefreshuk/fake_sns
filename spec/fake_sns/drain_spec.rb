@@ -69,6 +69,7 @@ RSpec.describe 'Drain messages', :sqs do
 
     app_runner.kill
 
+    sleep(0.1)
     expect(requests.size).to eq 1
     expect(requests.first).to match_json_expression(
       'Type'             => 'Notification',
