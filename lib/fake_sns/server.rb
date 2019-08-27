@@ -116,7 +116,7 @@ module FakeSNS
 
     get %r{/signing-certificate(.pem)?} do
       content_type 'text/plain', charset: 'utf-8'
-      File.read(File.join(ROOT_DIR, 'keys/cert.pem'))
+      File.read(File.join(FakeSNS::ROOT_DIR, 'keys/cert.pem'))
     end
   end
 end

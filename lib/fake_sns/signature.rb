@@ -33,7 +33,7 @@ module FakeSNS
     end
 
     def key
-      key_contents = File.read(File.join(ROOT_DIR, 'keys/private.pem'))
+      key_contents = File.read(File.join(FakeSNS::ROOT_DIR, 'keys/private.pem'))
       OpenSSL::PKey::RSA.new(key_contents)
     end
 

@@ -82,29 +82,39 @@ module FakeSNS
     end
 
     def http_or_https
-      puts "Notifying endpoint #{endpoint}"
-      Faraday.new.post(endpoint) do |f|
-        f.body = {
-          'Type'             => message.type,
-          'MessageId'        => message.id,
-          'TopicArn'         => message.topic_arn,
-          'Subject'          => message.subject,
-          'Message'          => message_contents,
-          'Timestamp'        => message.timestamp,
-          'SignatureVersion' => '1',
-          'Signature'        => Base64.strict_encode64(message.signature),
-          'SigningCertURL'   => signing_url,
-          'UnsubscribeURL'   => '', # TODO: url to unsubscribe URL on this server
-        }.to_json
+      $log.info(self.to_s) { "Notifying endpoint '#{endpoint}'" }
+      $log.debug(self.to_s) { "Sending #{message}" }
 
-        f.headers = {
-          'x-amz-sns-message-type'     => 'Notification',
-          'x-amz-sns-message-id'       => message.id,
-          'x-amz-sns-topic-arn'        => message.topic_arn,
-          'x-amz-sns-subscription-arn' => arn,
-          'Content-Type'               => 'application/json'
-        }
+      Faraday.new.post(endpoint) do |f|
+        begin
+          f.body = {
+            'Type'             => message.type,
+            'MessageId'        => message.id,
+            'TopicArn'         => message.topic_arn,
+            'Subject'          => message.subject,
+            'Message'          => message_contents,
+            'Timestamp'        => message.timestamp,
+            'SignatureVersion' => '1',
+            'Signature'        => Base64.strict_encode64(message.signature),
+            'SigningCertURL'   => signing_url,
+            'UnsubscribeURL'   => '', # TODO: url to unsubscribe URL on this server
+          }.to_json
+
+          f.headers = {
+            'x-amz-sns-message-type'     => 'Notification',
+            'x-amz-sns-message-id'       => message.id,
+            'x-amz-sns-topic-arn'        => message.topic_arn,
+            'x-amz-sns-subscription-arn' => arn,
+            'Content-Type'               => 'application/json'
+          }
+        rescue Faraday::TimeoutError => e
+          $log.fatal(self.to_s) { "Failed to notify endpoint '#{endpoint}'" }
+          $log.fatal(self.to_s) { "Not sent: #{message}" }
+        end
       end
+
+      $log.info(self.to_s) { "Notified endpoint '#{endpoint}'" }
+      $log.debug(self.to_s) { "Sent #{message}" }
     end
   end
 end

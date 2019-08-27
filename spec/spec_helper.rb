@@ -6,6 +6,11 @@ Bundler.setup
 require 'verbose_hash_fetch'
 require 'aws-sdk'
 require 'pry'
+
+module FakeSNS
+  ROOT_DIR = File.join(__dir__, '..')
+end
+
 require 'fake_sns/test_integration'
 require 'fake_sqs/test_integration'
 require 'fake_sns/filter'
