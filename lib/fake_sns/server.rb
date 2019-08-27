@@ -27,10 +27,10 @@ module FakeSNS
       database.transaction do
         begin
           response = database.perform(action, params)
-          puts "New message: #{params}"
+          $log.info(self.to_s) { "New message: #{params}" }
           status 200
           if action == 'Publish' && settings.auto_drain
-            puts "Draining message #{response.message_id}"
+            $log.info(self.to_s) { "Draining message #{response.message_id}" }
             drain_message(response.message_id)
           end
           erb :"#{response.template}.xml", scope: response

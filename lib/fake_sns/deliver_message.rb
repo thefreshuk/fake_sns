@@ -84,7 +84,7 @@ module FakeSNS
 
     def http_or_https
       $log.info(self.to_s) { "Notifying endpoint '#{endpoint}'" }
-      $log.debug(self.to_s) { "Sending #{message}" }
+      $log.debug(self.to_s) { "Sending #{message.attributes}" }
 
       promise = Concurrent::Promise.execute do
         Faraday.new.post(endpoint) do |f|
@@ -118,7 +118,7 @@ module FakeSNS
         $log.info(self.to_s) { "Notified endpoint '#{endpoint}'" }
         $log.debug(self.to_s) { "Sent #{message}" }
       end
-
+      
       promise.value if FakeSNS::ASYNC
     end
   end
