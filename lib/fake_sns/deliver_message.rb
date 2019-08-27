@@ -83,7 +83,7 @@ module FakeSNS
 
     def http_or_https
       $log.info(self.to_s) { "Notifying endpoint '#{endpoint}'" }
-      $log.debug(self.to_s) { "Sending #{message}" }
+      $log.debug(self.to_s) { "Sending #{message.attributes}" }
 
       Faraday.new.post(endpoint) do |f|
         begin
@@ -109,12 +109,12 @@ module FakeSNS
           }
         rescue Faraday::TimeoutError => e
           $log.fatal(self.to_s) { "Failed to notify endpoint '#{endpoint}'" }
-          $log.fatal(self.to_s) { "Not sent: #{message}" }
+          $log.fatal(self.to_s) { "Not sent: #{message.attributes}" }
         end
       end
 
       $log.info(self.to_s) { "Notified endpoint '#{endpoint}'" }
-      $log.debug(self.to_s) { "Sent #{message}" }
+      $log.debug(self.to_s) { "Sent #{message.attributes}" }
     end
   end
 end
