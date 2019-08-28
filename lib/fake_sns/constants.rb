@@ -1,4 +1,4 @@
 module FakeSNS
   ROOT_DIR = File.join(__dir__, '../..')
-  ASYNC = true
+  ASYNC = ENV['RACK_ENV'] != 'test'
 end
