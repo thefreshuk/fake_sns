@@ -118,8 +118,10 @@ module FakeSNS
         $log.info(self.to_s) { "Notified endpoint '#{endpoint}'" }
         $log.debug(self.to_s) { "Sent #{message}" }
       end
-      
-      promise.value if FakeSNS::ASYNC
+
+      puts "Hello"
+      puts "Disabled async" unless FakeSNS::ASYNC
+      promise.value unless FakeSNS::ASYNC
     end
   end
 end
