@@ -87,7 +87,10 @@ module FakeSNS
       $log.debug(self.to_s) { "Sending #{message.attributes}" }
 
       promise = Concurrent::Promise.execute do
-        Faraday.new.post(endpoint) do |f|
+        Faraday.new do |faraday|
+          faraday.use Faraday::Response::RaiseError
+          faraday.adapter Faraday.default_adapter
+        end.post(endpoint) do |f|
           begin
             f.body = {
                 'Type'             => message.type,
