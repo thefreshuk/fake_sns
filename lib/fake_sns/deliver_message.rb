@@ -88,44 +88,42 @@ module FakeSNS
 
       promise = Concurrent::Promise.execute do
         Faraday.new.post(endpoint) do |f|
-          f.body = {
-              'Type'             => message.type,
-              'MessageId'        => message.id,
-              'TopicArn'         => message.topic_arn,
-              'Subject'          => message.subject,
-              'Message'          => message_contents,
-              'Timestamp'        => message.timestamp,
-              'SignatureVersion' => '1',
-              'Signature'        => Base64.strict_encode64(message.signature),
-              'SigningCertURL'   => signing_url,
-              'UnsubscribeURL'   => '', # TODO: url to unsubscribe URL on this server
-          }.to_json
+          begin
+            f.body = {
+                'Type'             => message.type,
+                'MessageId'        => message.id,
+                'TopicArn'         => message.topic_arn,
+                'Subject'          => message.subject,
+                'Message'          => message_contents,
+                'Timestamp'        => message.timestamp,
+                'SignatureVersion' => '1',
+                'Signature'        => Base64.strict_encode64(message.signature),
+                'SigningCertURL'   => signing_url,
+                'UnsubscribeURL'   => '', # TODO: url to unsubscribe URL on this server
+            }.to_json
 
-          f.headers = {
-              'x-amz-sns-message-type'     => 'Notification',
-              'x-amz-sns-message-id'       => message.id,
-              'x-amz-sns-topic-arn'        => message.topic_arn,
-              'x-amz-sns-subscription-arn' => arn,
-              'Content-Type'               => 'application/json'
-          }
+            f.headers = {
+                'x-amz-sns-message-type'     => 'Notification',
+                'x-amz-sns-message-id'       => message.id,
+                'x-amz-sns-topic-arn'        => message.topic_arn,
+                'x-amz-sns-subscription-arn' => arn,
+                'Content-Type'               => 'application/json'
+            }
+          rescue Faraday::Error => e
+            $log.fatal(self.to_s) do
+              err = <<-ERR
+                Failed to notify endpoint '#{endpoint}'. 
+                  Status: #{e.response.status}
+                  Reason: #{e.response.reason_phrase}
+              ERR
+              err.strip
+            end
+            $log.fatal(self.to_s) { "Not sent: #{message}" }
+          end
         end
       end.then do
         $log.info(self.to_s) { "Notified endpoint '#{endpoint}'" }
         $log.debug(self.to_s) { "Sent #{message}" }
-      end.rescue do |e|
-        $log.fatal(self.to_s) do
-          unless e.respond_to?(:response)
-            return "Failed to notify endpoint '#{endpoint}'."
-          end
-
-          err = <<-ERR
-            Failed to notify endpoint '#{endpoint}'. 
-              Status: #{e.response.status}
-              Reason: #{e.response.reason_phrase}
-          ERR
-          err.strip
-        end
-        $log.fatal(self.to_s) { "Not sent: #{message}" }
       end
 
       promise.value unless FakeSNS::ASYNC
