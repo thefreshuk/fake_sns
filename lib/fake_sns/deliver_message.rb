@@ -114,14 +114,8 @@ module FakeSNS
               }
           end
         rescue Faraday::Error => e
-          $log.fatal(self.to_s) do
-            err = <<-ERR
-                Failed to notify endpoint '#{endpoint}'. 
-                  Status: #{e.response.status}
-                  Reason: #{e.response.reason_phrase}
-            ERR
-            err.strip
-          end
+          $log.fatal(self.to_s) { "Failed to notify endpoint '#{endpoint}'" }
+          $log.fatal(self.to_s) e
           $log.fatal(self.to_s) { "Not sent: #{message}" }
         end
       end.then do
