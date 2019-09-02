@@ -113,7 +113,18 @@ module FakeSNS
         $log.info(self.to_s) { "Notified endpoint '#{endpoint}'" }
         $log.debug(self.to_s) { "Sent #{message}" }
       end.rescue do |e|
-        $log.fatal(self.to_s) { "Failed to notify endpoint '#{endpoint}'" }
+        $log.fatal(self.to_s) do
+          unless e.respond_to?(:response)
+            return "Failed to notify endpoint '#{endpoint}'."
+          end
+
+          err = <<-ERR
+            Failed to notify endpoint '#{endpoint}'. 
+              Status: #{e.response.status}
+              Reason: #{e.response.reason_phrase}
+          ERR
+          err.strip
+        end
         $log.fatal(self.to_s) { "Not sent: #{message}" }
       end
 
