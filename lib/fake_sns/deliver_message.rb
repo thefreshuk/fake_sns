@@ -88,39 +88,35 @@ module FakeSNS
 
       promise = Concurrent::Promise.execute do
         Faraday.new.post(endpoint) do |f|
-          begin
-            f.body = {
-                'Type'             => message.type,
-                'MessageId'        => message.id,
-                'TopicArn'         => message.topic_arn,
-                'Subject'          => message.subject,
-                'Message'          => message_contents,
-                'Timestamp'        => message.timestamp,
-                'SignatureVersion' => '1',
-                'Signature'        => Base64.strict_encode64(message.signature),
-                'SigningCertURL'   => signing_url,
-                'UnsubscribeURL'   => '', # TODO: url to unsubscribe URL on this server
-            }.to_json
+          f.body = {
+              'Type'             => message.type,
+              'MessageId'        => message.id,
+              'TopicArn'         => message.topic_arn,
+              'Subject'          => message.subject,
+              'Message'          => message_contents,
+              'Timestamp'        => message.timestamp,
+              'SignatureVersion' => '1',
+              'Signature'        => Base64.strict_encode64(message.signature),
+              'SigningCertURL'   => signing_url,
+              'UnsubscribeURL'   => '', # TODO: url to unsubscribe URL on this server
+          }.to_json
 
-            f.headers = {
-                'x-amz-sns-message-type'     => 'Notification',
-                'x-amz-sns-message-id'       => message.id,
-                'x-amz-sns-topic-arn'        => message.topic_arn,
-                'x-amz-sns-subscription-arn' => arn,
-                'Content-Type'               => 'application/json'
-            }
-          rescue Faraday::TimeoutError => e
-            $log.fatal(self.to_s) { "Failed to notify endpoint '#{endpoint}'" }
-            $log.fatal(self.to_s) { "Not sent: #{message}" }
-          end
+          f.headers = {
+              'x-amz-sns-message-type'     => 'Notification',
+              'x-amz-sns-message-id'       => message.id,
+              'x-amz-sns-topic-arn'        => message.topic_arn,
+              'x-amz-sns-subscription-arn' => arn,
+              'Content-Type'               => 'application/json'
+          }
         end
       end.then do
         $log.info(self.to_s) { "Notified endpoint '#{endpoint}'" }
         $log.debug(self.to_s) { "Sent #{message}" }
+      end.rescue do |e|
+        $log.fatal(self.to_s) { "Failed to notify endpoint '#{endpoint}'" }
+        $log.fatal(self.to_s) { "Not sent: #{message}" }
       end
 
-      puts "Hello"
-      puts "Disabled async" unless FakeSNS::ASYNC
       promise.value unless FakeSNS::ASYNC
     end
   end
