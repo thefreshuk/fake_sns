@@ -124,6 +124,8 @@ module FakeSNS
       end.then do
         $log.info(self.to_s) { "Notified endpoint '#{endpoint}'" }
         $log.debug(self.to_s) { "Sent #{message}" }
+      end.rescue do |e|
+        $log.fatal(e)
       end
 
       promise.value unless FakeSNS::ASYNC
